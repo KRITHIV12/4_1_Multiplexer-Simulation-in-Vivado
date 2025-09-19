@@ -41,13 +41,19 @@ module mux4_gate (
     input  wire S0, S1,
     output wire Y
 );
-    // Declare internal wires
 
-    // Write NOT gates
+    wire S0n, S1n;
+    wire w0, w1, w2, w3;
 
-    // Write AND gates
+    not (S0n, S0);
+    not (S1n, S1);
 
-    // Write OR gate
+    and (w0, I0, S0n, S1n); 
+    and (w1, I1, S0,  S1n); 
+    and (w2, I2, S0n, S1);  
+    and (w3, I3, S0,  S1);  
+
+    or (Y, w0, w1, w2, w3);
 
 endmodule
 
@@ -58,12 +64,10 @@ endmodule
 `timescale 1ns/1ps
 module tb_mux4_gate;
 
-    // Declare testbench signals
     reg I0, I1, I2, I3;
     reg S0, S1;
     wire Y;
 
-    // Instantiate DUT
     mux4_gate uut (
         .I0(I0), .I1(I1), .I2(I2), .I3(I3),
         .S0(S0), .S1(S1),
@@ -71,30 +75,37 @@ module tb_mux4_gate;
     );
 
     initial begin
-        // Initialize inputs
+        I0 = 0; I1 = 0; I2 = 0; I3 = 0;
+        S0 = 0; S1 = 0;
 
-        // Apply test cases
+        #10 I0=1; S0=0; S1=0;   
+        #10 I0=0; I1=1; S0=1; S1=0; 
+        #10 I1=0; I2=1; S0=0; S1=1; 
+        #10 I2=0; I3=1; S0=1; S1=1; 
+        #10;
 
-        // Stop simulation
-        #10 $stop;
+        $stop;
     end
 
 endmodule
 ```
 ## Simulated Output Gate Level Modelling
 
-<img width="940" height="587" alt="image" src="https://github.com/user-attachments/assets/dc8adc8c-1b3e-4cc0-b3c9-78b763f0097e" />
+<img width="1855" height="1199" alt="gate mux" src="https://github.com/user-attachments/assets/a2cc153e-8a75-44ec-a991-da4dec6d3c10" />
 
 ---
 ### 4:1 MUX Data flow Modelling
-```verilog
-// Dataflow Modelling - Skeleton
+```
 module mux4_dataflow (
     input  wire I0, I1, I2, I3,
     input  wire S0, S1,
     output wire Y
 );
-    // Write assign statement using operators
+
+    assign Y = (S1 == 0 && S0 == 0) ? I0 :
+               (S1 == 0 && S0 == 1) ? I1 :
+               (S1 == 1 && S0 == 0) ? I2 :
+                                      I3; 
 
 endmodule
 
@@ -105,12 +116,10 @@ endmodule
 `timescale 1ns/1ps
 module tb_mux4_dataflow;
 
-    // Declare testbench signals
     reg I0, I1, I2, I3;
     reg S0, S1;
     wire Y;
 
-    // Instantiate DUT
     mux4_dataflow uut (
         .I0(I0), .I1(I1), .I2(I2), .I3(I3),
         .S0(S0), .S1(S1),
@@ -118,25 +127,33 @@ module tb_mux4_dataflow;
     );
 
     initial begin
-        // Initialize inputs
+        I0=1; I1=0; I2=0; I3=0; S0=0; S1=0;
+        #10;
 
-        // Apply test cases
+        I0=0; I1=1; I2=0; I3=0; S0=1; S1=0;
+        #10;
 
-        // Stop simulation
-        #10 $stop;
+        I0=0; I1=0; I2=1; I3=0; S0=0; S1=1;
+        #10;
+
+        I0=0; I1=0; I2=0; I3=1; S0=1; S1=1;
+        #10;
+
+        $stop; 
     end
 
 endmodule
 
+ 
 ```
 ## Simulated Output Dataflow Modelling
 
-<img width="940" height="587" alt="image" src="https://github.com/user-attachments/assets/4982be49-019c-417b-aaef-923a16f4d5b0" />
+<img width="1850" height="1190" alt="mux data flow" src="https://github.com/user-attachments/assets/587da666-1330-4cf7-8bfe-d7c373397178" />
 
 ---
 ### 4:1 MUX Behavioral Implementation
-
-````timescale 1ns / 1ps
+```verilog
+`timescale 1ns / 1ps
 
 
 module MUX_4_1(i,s,y);
@@ -153,6 +170,9 @@ always@(*)
         endcase
      end
 endmodule
+```
+### 4:1 MUX Behavioral Modelling- Testbench
+```verilog
 module tb_mux_4_1;
 reg [3:0] i;
 reg [1:0] s;
@@ -177,10 +197,11 @@ $display("Selection is %b %b - Output = %b", s[1],s[0], y);
 $finish;
 end
 endmodule
+
 ```
 ## Simulated Output Behavioral Modelling
 
-<img width="1857" height="1161" alt="mux behaviour" src="https://github.com/user-attachments/assets/60104cac-ad8b-4218-9560-f053d3ad0ae6" />
+<img width="1918" height="1198" alt="image" src="https://github.com/user-attachments/assets/78838708-68c0-44be-92c4-f5ce6efa5d94" />
 
 
 
@@ -198,7 +219,10 @@ module mux2_to_1 (
 );
     assign Y = S ? B : A;
 endmodule
-
+```
+### Testbench Implementation
+```verilog
+`timescale 1ns / 1ps
 module mux4_to_1_structural (
     input wire A,
     input wire B,
@@ -208,39 +232,57 @@ module mux4_to_1_structural (
     input wire S1,
     output wire Y
 );
-
-
-
-
-endmodule
-```
-### Testbench Implementation
-```verilog
-`timescale 1ns / 1ps
-
-module mux4_to_1_tb;
-    reg A, B, C, D, S0, S1;
-    wire Y_gate, Y_dataflow, Y_behavioral, Y_structural;
+    wire w1, w2;
 
     
-
-    initial begin
-        A = 0; B = 0; C = 0; D = 0; S0 = 0; S1 = 0;
-
-      
-        #10 $stop;
-    end
+    mux2_to_1 m1 (.A(A), .B(B), .S(S0), .Y(w1)); 
+    mux2_to_1 m2 (.A(C), .B(D), .S(S0), .Y(w2)); 
 
    
+    mux2_to_1 m3 (.A(w1), .B(w2), .S(S1), .Y(Y));
+
+endmodule
+module mux4_to_1_tb;
+    reg A, B, C, D, S0, S1;
+    wire Y_structural;
+
+    
+    mux4_to_1_structural uut (
+        .A(A), .B(B), .C(C), .D(D),
+        .S0(S0), .S1(S1),
+        .Y(Y_structural)
+    );
+
+    initial begin
+        
+        A=0; B=0; C=0; D=0; S0=0; S1=0;
+
+        
+        A=1; B=0; C=0; D=0; S0=0; S1=0;
+        #10;
+
+       
+        A=0; B=1; C=0; D=0; S0=1; S1=0;
+        #10;
+
+        
+        A=0; B=0; C=1; D=0; S0=0; S1=1;
+        #10;
+
+       
+        A=0; B=0; C=0; D=1; S0=1; S1=1;
+        #10;
+
+        $stop;
     end
 endmodule
 ```
 ## Simulated Output Structural Modelling
 
-<img width="940" height="588" alt="image" src="https://github.com/user-attachments/assets/59daf06d-a23f-453a-b245-88193c4ba620" />
+<img width="1828" height="1049" alt="mux struct" src="https://github.com/user-attachments/assets/38b748c6-b77e-4911-9913-481ae86b3711" />
 
 ---
 ### CONCLUSION
 
-In this experiment, a 4:1 Multiplexer was successfully designed and simulated using Verilog HDL across four different modeling styles: Gate-Level, Data Flow, Behavioral, and Structural.The simulation results verified the correct functionality of the MUX, with all implementations producing identical outputs for the given input conditions.
+In this experiment, a 4:1 Multiplexer was successfully designed and simulated using Verilog HDL across four different modeling styles: Gate-Level, Data Flow, Behavioral, and Structural.The simulation results verified the correct functionality of the MUX, with all implementations producing identical outputs for the given input conditions. of the MUX, with all implementations producing identical outputs for the given input conditions.
 
