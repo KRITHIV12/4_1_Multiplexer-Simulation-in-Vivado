@@ -151,38 +151,51 @@ module mux4_to_1_behavioral (
 endmodule
 ```
 ### 4:1 MUX Behavioral Modelling- Testbench
-```verilog
-// Testbench Skeleton
-`timescale 1ns/1ps
-module tb_mux4_behavioral;
+````timescale 1ns / 1ps
 
-    // Declare testbench signals
-    reg I0, I1, I2, I3;
-    reg S0, S1;
-    wire Y;
 
-    // Instantiate DUT
-    mux4_behavioral uut (
-        .I0(I0), .I1(I1), .I2(I2), .I3(I3),
-        .S0(S0), .S1(S1),
-        .Y(Y)
-    );
-
-    initial begin
-        // Initialize inputs
-
-        // Apply test cases
-
-        // Stop simulation
-        #10 $stop;
-    end
-
+module MUX_4_1(i,s,y);
+input [3:0]i;
+input [1:0]s;
+output reg y;
+always@(*)
+    begin
+        case(s)
+        2'b00:y=i[0];
+        2'b01:y=i[1];
+        2'b10:y=i[2];
+        2'b11:y=i[3];
+        endcase
+     end
 endmodule
+module tb_mux_4_1;
+reg [3:0] i;
+reg [1:0] s;
+wire y;
+MUX_4_1 uut(i, s, y);
+initial 
+begin
+i = 4'b1011;
+s = 2'b00; 
+#10;
+$display("Selection is %b %b- Output = %b", s[1],s[0], y);
+s = 2'b01; 
+#10;
+$display("Selection is %b %b - Output = %b", s[1],s[0] ,y);
+s = 2'b10; 
+#10;
+$display("Selection is %b %b - Output = %b", s[1],s[0], y);
 
+s = 2'b11; 
+#10;
+$display("Selection is %b %b - Output = %b", s[1],s[0], y);
+$finish;
+end
+endmodule
 ```
 ## Simulated Output Behavioral Modelling
 
-<img width="940" height="587" alt="image" src="https://github.com/user-attachments/assets/659a4a2d-df78-4528-ad52-821ef7ef69ee" />
+![Uploading mux behaviour.png…]()
 
 
 ### 4:1 MUX Structural Implementation
