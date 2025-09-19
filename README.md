@@ -135,22 +135,7 @@ endmodule
 
 ---
 ### 4:1 MUX Behavioral Implementation
-```verilog
-module mux4_to_1_behavioral (
-    input wire A,
-    input wire B,
-    input wire C,
-    input wire D,
-    input wire S0,
-    input wire S1,
-    output reg Y
-);
-    always @(*) begin
-        
-    end
-endmodule
-```
-### 4:1 MUX Behavioral Modelling- Testbench
+
 ````timescale 1ns / 1ps
 
 
@@ -195,7 +180,8 @@ endmodule
 ```
 ## Simulated Output Behavioral Modelling
 
-![Uploading mux behaviour.png…]()
+<img width="1857" height="1161" alt="mux behaviour" src="https://github.com/user-attachments/assets/60104cac-ad8b-4218-9560-f053d3ad0ae6" />
+
 
 
 ### 4:1 MUX Structural Implementation
